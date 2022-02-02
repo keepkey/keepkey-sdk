@@ -16,7 +16,7 @@ module.exports = class wallet {
     private spec: string;
     private queryKey: any;
     constructor(spec:string,config:any) {
-        this.spec = spec
+        this.spec = spec || 'http://localhost:1646/spec/swagger.json'
         this.queryKey = config.queryKey
         this.init = async function () {
             let tag = TAG + " | init_wallet | "
