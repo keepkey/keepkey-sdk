@@ -19,7 +19,7 @@ let run_test = async function(){
             "network":"ETH",
             "asset":"ETH",
             "type":"swap",
-            "swap":{
+            "transaction":{
                 "type":"swap",
                 "protocol":"thorchain",
                 "context":"0x33b35c665496bA8E71B22373843376740401F106.wallet",
