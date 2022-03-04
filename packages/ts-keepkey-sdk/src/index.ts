@@ -8,10 +8,11 @@ const TAG = " | keepkey-client-ts | "
 const log = require("@pioneer-platform/loggerdog")()
 
 //bridge follows OpenAPI spec
-import KeepKey from 'openapi-client-axios'
+import KeepKey, { AxiosError } from 'openapi-client-axios'
 import { KeepKeyConfig } from './types';
+import { Client as KeepKeyClientTypes } from './client';
 
-export class Wallet {
+export class KeepKeyClient {
     private spec: string;
     private config: KeepKeyConfig;
 
@@ -33,8 +34,16 @@ export class Wallet {
                 }
             });
             await kkApi.init()
-            console.log(kkApi.instance)
-            return kkApi
+            const client = await kkApi.getClient<KeepKeyClientTypes>()
+            try {
+                await client.VerifyAuthentication()
+            } catch (err) {
+                let e = err as AxiosError
+                if (e.response && e.response.status == 401) {
+                    await client.Pair(null, { serviceName: this.config.serviceName, serviceImageUrl: this.config.serviceImageUrl })
+                }
+            }
+            return client
         } catch (e) {
             log.error(tag, e)
             throw e
@@ -42,4 +51,4 @@ export class Wallet {
     }
 }
 
-export default Wallet
+export default KeepKeyClient
