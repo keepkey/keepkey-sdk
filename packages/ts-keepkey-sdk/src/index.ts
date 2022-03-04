@@ -8,36 +8,47 @@ const TAG = " | keepkey-client-ts | "
 const log = require("@pioneer-platform/loggerdog")()
 
 //bridge follows OpenAPI spec
-const KeepKey = require('openapi-client-axios').default;
-let kkApi:any
+import KeepKey, { AxiosError } from 'openapi-client-axios'
+import { KeepKeyConfig } from './types';
+import { Client as KeepKeyClientTypes } from './client';
 
-module.exports = class wallet {
-    private init: (spec: string, config: any) => Promise<any>;
+export class KeepKeyClient {
     private spec: string;
-    private queryKey: any;
-    constructor(spec:string,config:any) {
-        this.spec = spec || 'http://localhost:1646/spec/swagger.json'
-        this.queryKey = config.queryKey
-        this.init = async function () {
-            let tag = TAG + " | init_wallet | "
-            try{
-                if(!this.queryKey) throw Error(" You must create an api key! ")
-                kkApi = new KeepKey({
-                    definition:spec,
-                    axiosConfigDefaults: {
-                        headers: {
-                            'Authorization': this.queryKey,
-                        },
-                    }
-                });
-                await kkApi.init()
-                return kkApi
-            }catch(e){
-                log.error(tag,e)
-                throw e
+    private config: KeepKeyConfig;
+
+    constructor(config: KeepKeyConfig) {
+        this.spec = config.spec || 'http://localhost:1646/spec/swagger.json'
+        this.config = config
+    }
+
+    async init() {
+        let tag = TAG + " | init_wallet | "
+        try {
+            if (!this.config.serviceKey) throw Error(" You must create an api key! ")
+            const kkApi = new KeepKey({
+                definition: this.spec,
+                axiosConfigDefaults: {
+                    headers: {
+                        'Authorization': this.config.serviceKey,
+                    },
+                }
+            });
+            await kkApi.init()
+            const client = await kkApi.getClient<KeepKeyClientTypes>()
+            try {
+                await client.VerifyAuthentication()
+            } catch (err) {
+                let e = err as AxiosError
+                if (e.response && e.response.status == 401) {
+                    await client.Pair(null, { serviceName: this.config.serviceName, serviceImageUrl: this.config.serviceImageUrl })
+                }
             }
+            return client
+        } catch (e) {
+            log.error(tag, e)
+            throw e
         }
     }
 }
 
-
+export default KeepKeyClient

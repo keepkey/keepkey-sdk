@@ -1,18 +1,18 @@
 
-let kkApi = require("../lib")
+const { KeepKeyClient } = require("../lib")
 
 let spec = 'http://localhost:1646/spec/swagger.json'
 
-let run_test = async function(){
-    try{
+let run_test = async function () {
+    try {
         let config = {
-            queryKey:'sdk:2d0ec79c-6733-4235-9b09-9b87171edc16',
+            serviceKey: process.env['SERVICE_KEY'] || 'abc-123',
+            serviceName: process.env['SERVICE_NAME'] || 'KeepKey SDK Demo App',
+            serviceImageUrl: process.env['SERVICE_IMAGE_URL'] || 'https://github.com/BitHighlander/keepkey-desktop/raw/master/electron/icon.png',
             spec
         }
-
-        //get config
-        let kk = new kkApi(spec,config)
-        kk = await kk.init()
+        //init
+        let kk = await new KeepKeyClient(config).init()
 
         let tx = {
             "chain_id": "osmosis-1",
@@ -49,39 +49,39 @@ let run_test = async function(){
 
 
         //Unsigned TX
-        let unsignedTx =  {
-            "network":"OSMO",
-            "asset":"OSMO",
-            "transaction":{
-                "context":"0x33b35c665496bA8E71B22373843376740401F106.wallet",
-                "type":"transfer",
-                "addressFrom":"osmo1qjwdyn56ecagk8rjf7crrzwcyz6775cj07qz9r",
-                "recipient":"osmo15cenya0tr7nm3tz2wn3h3zwkht2rxrq7g9ypmq",
-                "asset":"OSMO",
-                "network":"OSMO",
-                "memo":"",
-                "amount":"0.0001",
-                "fee":{
-                    "priority":5
+        let unsignedTx = {
+            "network": "OSMO",
+            "asset": "OSMO",
+            "transaction": {
+                "context": "0x33b35c665496bA8E71B22373843376740401F106.wallet",
+                "type": "transfer",
+                "addressFrom": "osmo1qjwdyn56ecagk8rjf7crrzwcyz6775cj07qz9r",
+                "recipient": "osmo15cenya0tr7nm3tz2wn3h3zwkht2rxrq7g9ypmq",
+                "asset": "OSMO",
+                "network": "OSMO",
+                "memo": "",
+                "amount": "0.0001",
+                "fee": {
+                    "priority": 5
                 },
-                "noBroadcast":true
+                "noBroadcast": true
             },
-            "HDwalletPayload":{
+            "HDwalletPayload": {
                 tx,
-                "addressNList":[ 2147483692, 2147483766, 2147483648, 0, 0 ],
+                "addressNList": [2147483692, 2147483766, 2147483648, 0, 0],
                 chain_id: tx.chain_id,
                 account_number: tx.account_number,
                 sequence: tx.sequence,
             },
-            "verbal":"osmosis transfer transaction"
+            "verbal": "osmosis transfer transaction"
         }
 
         //push tx to api
         // console.log(kk.instance.SignTransaction())
-        let responseSign = await kk.instance.SignTransaction(null,{data:{invocation:{unsignedTx}}})
-        console.log("responseSign: ",responseSign.data)
+        let responseSign = await kk.instance.SignTransaction(null, { data: { invocation: { unsignedTx } } })
+        console.log("responseSign: ", responseSign.data)
 
-    }catch(e){
+    } catch (e) {
         console.error(e)
     }
 }

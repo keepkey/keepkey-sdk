@@ -1,18 +1,18 @@
 
-let kkApi = require("../lib")
+const { KeepKeyClient } = require("../lib")
 
 let spec = 'http://localhost:1646/spec/swagger.json'
 
 let run_test = async function(){
     try{
         let config = {
-            queryKey:'sdk:2d0ec79c-6733-4235-9b09-9b87171edc16',
+            serviceKey: process.env['SERVICE_KEY'] || 'abc-123',
+            serviceName: process.env['SERVICE_NAME'] || 'KeepKey SDK Demo App',
+            serviceImageUrl: process.env['SERVICE_IMAGE_URL'] || 'https://github.com/BitHighlander/keepkey-desktop/raw/master/electron/icon.png',
             spec
         }
-
-        //get config
-        let kk = new kkApi(spec,config)
-        kk = await kk.init()
+        //init
+        let kk = await new KeepKeyClient(config).init()
 
         //Unsigned TX
         let unsignedTx =  {
