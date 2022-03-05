@@ -14,7 +14,7 @@ let run_test = async function () {
         let kk = await new KeepKeyClient(config).init()
 
         let user = await kk.User()
-        console.log(user.data)
+        console.log(user.data.accounts.find((a) => a.network == ASSET))
     } catch (e) {
         console.error(e)
     }
