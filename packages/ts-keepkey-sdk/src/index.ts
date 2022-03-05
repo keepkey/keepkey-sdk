@@ -36,7 +36,7 @@ export class KeepKeyClient {
             await kkApi.init()
             const client = await kkApi.getClient<KeepKeyClientTypes>()
             try {
-                await client.VerifyAuthentication()
+                await client.VerifyAuth()
             } catch (err) {
                 let e = err as AxiosError
                 if (e.response && e.response.status == 401) {
