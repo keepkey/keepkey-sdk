@@ -1,6 +1,6 @@
 {
   "name": "keepkey-sdk",
-  "version": "0.0.01",
+  "version": "0.0.03",
   "main": "./lib/index.js",
   "types": "./lib/main.d.ts",
   "scripts": {
