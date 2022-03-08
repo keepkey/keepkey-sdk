@@ -21,7 +21,7 @@ export class KeepKeyClient {
         this.config = config
     }
 
-    async init() {
+    async init(): Promise<KeepKeyClientTypes> {
         let tag = TAG + " | init_wallet | "
         try {
             if (!this.config.serviceKey) throw Error(" You must create an api key! ")
