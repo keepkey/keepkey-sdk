@@ -59,7 +59,7 @@ let run_test = async function(){
 
         //push tx to api
         // console.log(kk.instance.SignTransaction())
-        let responseSign = await kk.instance.SignTransaction(null,{data:{invocation:{unsignedTx}}})
+        let responseSign = await kk.SignTransaction(null,{data:{invocation:{unsignedTx}}})
         console.log("responseSign: ",responseSign.data)
 
     }catch(e){
