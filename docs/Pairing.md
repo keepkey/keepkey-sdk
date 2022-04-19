@@ -1,6 +1,6 @@
 # Pairing with the KeepKey Desktop application
 
-### What you can do by pairing
+### What you can do by pairing your application
 
 The KeepKey Desktop application runs a RESTful API server on `http://localhost:1646`, pairing with the KeepKey Desktop application gives you to access many secured routes on this API that enable functionality like: 
 
