@@ -2,7 +2,7 @@
   "name": "keepkey-sdk",
   "version": "0.0.5",
   "main": "./lib/index.js",
-  "types": "./lib/main.d.ts",
+  "types": "./lib/index.d.ts",
   "scripts": {
     "npm": "npm i",
     "test": "npm run build && node __tests__/test-module.js",
