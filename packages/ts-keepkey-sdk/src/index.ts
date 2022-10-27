@@ -5,7 +5,6 @@
 
  */
 const TAG = " | keepkey-client-ts | "
-const log = require("@pioneer-platform/loggerdog")()
 
 //bridge follows OpenAPI spec
 import KeepKey, { AxiosError } from 'openapi-client-axios'
@@ -45,7 +44,7 @@ export class KeepKeyClient {
             }
             return client
         } catch (e) {
-            log.error(tag, e)
+            console.error(tag, e)
             throw e
         }
     }
