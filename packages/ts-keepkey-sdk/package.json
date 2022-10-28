@@ -13,16 +13,17 @@
     "refresh": "rm -rf ./node_modules ./package-lock.json && npm install"
   },
   "dependencies": {
-    "@pioneer-platform/loggerdog": "^8.1.17",
-    "@types/node": "^13.13.14",
+    "@ethersproject/bytes": "^5.7.0",
+    "@shapeshiftoss/hdwallet-core": "^1.37.0",
+    "@types/node": "^18.11.7",
+    "axios": "^0.27.2",
     "dotenv": "^8.6.0",
-    "openapi-client-axios": "^3.6.1",
-    "socket.io-client": "^2.3.0",
+    "google-protobuf": "^3.21.2",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.7"
   },
   "gitHead": "8f73c8e6833f870784aca4690d4b5f4ce9ed62d9",
   "devDependencies": {
-    "axios": "^0.27.2"
+    "@types/google-protobuf": "^3.15.6"
   }
 }

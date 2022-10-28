@@ -1,54 +1,13 @@
-/*
-       KeepKey Bridge SDK
+import { KeepKeySDK } from './sdk'
+import { KeepKeySDKConfig } from './types'
 
-       For connecting to the keepkey client
+export const getKeepKeySDK = async (config: KeepKeySDKConfig): Promise<ReturnType<typeof KeepKeySDK>> => {
+    const sdk = KeepKeySDK({ baseApiURL: config.baseApiURL ?? 'http://localhost:1646', ...config })
 
- */
-const TAG = " | keepkey-client-ts | "
-const log = require("@pioneer-platform/loggerdog")()
+    const verifyAuthResp = await sdk.service.verifyAuth()
+    if (verifyAuthResp.success) return sdk;
 
-//bridge follows OpenAPI spec
-import KeepKey, { AxiosError } from 'openapi-client-axios'
-import { KeepKeyConfig } from './types';
-import { Client as KeepKeyClientTypes } from './client';
+    await sdk.service.pair()
 
-export class KeepKeyClient {
-    private spec: string;
-    private config: KeepKeyConfig;
-
-    constructor(config: KeepKeyConfig) {
-        this.spec = config.spec || 'http://localhost:1646/spec/swagger.json'
-        this.config = config
-    }
-
-    async init(): Promise<KeepKeyClientTypes> {
-        let tag = TAG + " | init_wallet | "
-        try {
-            if (!this.config.serviceKey) throw Error(" You must create an api key! ")
-            const kkApi = new KeepKey({
-                definition: this.spec,
-                axiosConfigDefaults: {
-                    headers: {
-                        'Authorization': this.config.serviceKey,
-                    },
-                }
-            });
-            await kkApi.init()
-            const client = await kkApi.getClient<KeepKeyClientTypes>()
-            try {
-                await client.VerifyAuth()
-            } catch (err) {
-                let e = err as AxiosError
-                if (e.response && e.response.status == 401) {
-                    await client.Pair(null, { serviceName: this.config.serviceName, serviceImageUrl: this.config.serviceImageUrl })
-                }
-            }
-            return client
-        } catch (e) {
-            log.error(tag, e)
-            throw e
-        }
-    }
+    return sdk;
 }
-
-export default KeepKeyClient
