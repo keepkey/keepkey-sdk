@@ -2,9 +2,11 @@ import logo from './logo.png';
 import './App.css';
 // import {useEffect} from 'react';
 import { getKeepKeySDK } from 'keepkey-sdk'
+import wallet from '@pioneer-platform/pioneer-client'
+// console.log(wallet)
 // import ripple from 'ripple-lib';
 // const xrpl = require("xrpl")
-import xrpl from 'xrpl';
+// import xrpl from 'xrpl';
 
 function App() {
   let address
@@ -28,50 +30,97 @@ function App() {
 
       //push tx to api
       // console.log(kk.instance.SignTransaction())
-      let responseSign = await sdk.pubkeys.rippleGetAddress(addressInfo)
-      console.log("responseSign: ", responseSign.pubkey)
-      address = responseSign.pubkey
+      let responseAddress = await sdk.pubkeys.rippleGetAddress(addressInfo)
+      console.log("responseAddress: ", responseAddress.pubkey)
+      address = responseAddress.pubkey
       console.log("address", address)
 
-      const client = new xrpl.Client("wss://s.altnet.rippletest.net:51233")
-      await client.connect()
 
-      // Prepare transaction -------------------------------------------------------
-      const prepared = await client.autofill({
-        "TransactionType": "Payment",
-        "Account": address,
-        "Amount": xrpl.xrpToDrops("22"),
-        "Destination": "rPT1Sjq2YGrBMTttX4GZHjKu9dyfzbpAYe"
-      })
-      const max_ledger = prepared.LastLedgerSequence
-      console.log("Prepared transaction instructions:", prepared)
-      console.log("Transaction cost:", xrpl.dropsToXrp(prepared.Fee), "XRP")
-      console.log("Transaction expires after ledger:", max_ledger)
+      const config_pioneer = {
+        queryKey:'sdk:2d0ec79c-6733-4235-9b09-9b87171edc16',
+        username:"rango-example-keepkey",
+        // spec:"https://pioneers.dev/spec/swagger.json"
+        spec:"http://localhost:9001/spec/swagger.json"
+      }
 
-      // const PUBLIC_SERVER = "wss://xrplcluster.com/"
-      //https://s1.ripple.com:51234/
-      // const PUBLIC_SERVER = "https://s1.ripple.com:51234/"
-      // const PUBLIC_SERVER = "wss://x1.sologenic.org/"
-      // console.log("checkpoint1")
-      // const client = new xrpl.Client(PUBLIC_SERVER)
-      // console.log("checkpoint2")
-      // await client.connect()
-      // console.log("checkpoint3")
-      // // Get info from the ledger about the address we just funded
-      // const response = await client.request({
-      //   "command": "account_info",
-      //   "account": address,
-      //   "ledger_index": "validated"
-      // })
-      // console.log(response)
+      //globals
 
-      // console.log("pre-balance check: ")
-      // const api = new ripple.RippleAPI({ server: 'wss://s2.ripple.com:443' });
-      // console.log("pre-balance check: 1")
-      // await api.connect()
-      // console.log("pre-balance check: 2")
-      // let balances = await api.getBalances(address)
-      // console.log("balances: ",balances)
+      //sub to pioneer
+      console.log("pioneer: ",config_pioneer.spec)
+      let Pioneer = new wallet(config_pioneer.spec,config_pioneer)
+      let pioneer = await Pioneer.init()
+      console.log("pioneer: ",pioneer)
+      //test pioneer
+      let status = await pioneer.instance.Health()
+      if(!status.data.online) throw Error("Pioneer Server offline!")
+      console.log("pioneer status: ",status.data)
+
+      //get balance
+      let balance = await pioneer.instance.GetPubkeyBalance({asset:'XRP',pubkey:"rPT1Sjq2YGrBMTttX4GZHjKu9dyfzbpAYe"})
+      balance = balance.data
+      console.log("balance: ",balance)
+
+      //get account info
+      let account = await pioneer.instance.GetAccountInfo({network:'XRP',address:"rPT1Sjq2YGrBMTttX4GZHjKu9dyfzbpAYe"})
+      account = account.data
+      console.log("account: ",account)
+
+      let toAddress = ""
+      let fromAddress = ""
+      let amount = "1000"
+
+      let tx = {
+        "type": "auth/StdTx",
+        "value": {
+          "fee": {
+            "amount": [
+              {
+                "amount": "1000",
+                "denom": "drop"
+              }
+            ],
+            "gas": "28000"
+          },
+          "memo": "KeepKey",
+          "msg": [
+            {
+              "type": "ripple-sdk/MsgSend",
+              "value": {
+                "amount": [
+                  {
+                    "amount": amount,
+                    "denom": "drop"
+                  }
+                ],
+                "from_address": fromAddress,
+                "to_address": toAddress
+              }
+            }
+          ],
+          "signatures": null
+        }
+      }
+
+
+      let rippleTx = {
+          addressNList: '',
+          tx:tx,
+          flags: undefined,
+          sequence: "3",
+          lastLedgerSequence: "0",
+          payment: {
+            amount: amount,
+            destination: toAddress,
+            destinationTag: "1234567890",
+          },
+      }
+
+      //signTx
+      let responseSign = await sdk.sign.rippleSignTx(rippleTx)
+      console.log("responseSign: ", responseSign)
+
+      //broadcast
+
     }catch(e){
 
     }

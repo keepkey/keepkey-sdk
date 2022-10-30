@@ -11,7 +11,12 @@ module.exports = function override(config) {
         "os": require.resolve("os-browserify"),
         "url": require.resolve("url"),
         "net": require.resolve("net"),
-        "tls": require.resolve("tls")
+        // "zlib": require.resolve("zlib"),
+        "zlib": require.resolve("browserify-zlib"),
+        "path": require.resolve("path"),
+        "tls": require.resolve("tls"),
+        fs: false
+
     })
     config.resolve.fallback = fallback;
     config.plugins = (config.plugins || []).concat([
