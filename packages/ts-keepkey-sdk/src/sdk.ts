@@ -48,6 +48,13 @@ export const KeepKeySDK = (config: KeepKeySDKConfig) => ({
                 resolve({ success: false, error: err.response.data, code: err.response.status })
             })
         }),
+        rippleGetAddress: (body: BTCGetAddress): Promise<PubkeySuccessResponse<string> | ErrorResponse> => new Promise((resolve, reject) => {
+            axios.post(`${config.baseApiURL}/rippleGetAddress`, { ...body }, axiosConfig(config.serviceKey)).then((resp) => {
+                resolve({ success: true, pubkey: resp.data })
+            }).catch((err) => {
+                resolve({ success: false, error: err.response.data, code: err.response.status })
+            })
+        }),
         ethGetAddress: (body: ETHGetAddress): Promise<PubkeySuccessResponse<string> | ErrorResponse> => new Promise((resolve, reject) => {
             axios.post(`${config.baseApiURL}/ethGetAddress`, { ...body }, axiosConfig(config.serviceKey)).then((resp) => {
                 resolve({ success: true, pubkey: resp.data })
