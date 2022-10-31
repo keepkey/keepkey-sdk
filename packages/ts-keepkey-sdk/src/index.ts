@@ -1,54 +1,30 @@
-/*
-       KeepKey Bridge SDK
+import { ClientEndpointsApi, RecoveryEndpointsApi, DeveloperEndpointsApi, DeviceInfoEndpointsApi, KeepKeySignTxEndpointsApi, KeepKeyWalletEndpointsApi, RawKeepKeyDeviceI0EndpointsApi } from './generated'
+import { KeepKeySDKConfig } from './types'
 
-       For connecting to the keepkey client
-
- */
-const TAG = " | keepkey-client-ts | "
-const log = require("@pioneer-platform/loggerdog")()
-
-//bridge follows OpenAPI spec
-import KeepKey, { AxiosError } from 'openapi-client-axios'
-import { KeepKeyConfig } from './types';
-import { Client as KeepKeyClientTypes } from './client';
-
-export class KeepKeyClient {
-    private spec: string;
-    private config: KeepKeyConfig;
-
-    constructor(config: KeepKeyConfig) {
-        this.spec = config.spec || 'http://localhost:1646/spec/swagger.json'
-        this.config = config
-    }
-
-    async init(): Promise<KeepKeyClientTypes> {
-        let tag = TAG + " | init_wallet | "
-        try {
-            if (!this.config.serviceKey) throw Error(" You must create an api key! ")
-            const kkApi = new KeepKey({
-                definition: this.spec,
-                axiosConfigDefaults: {
-                    headers: {
-                        'Authorization': this.config.serviceKey,
-                    },
-                }
-            });
-            await kkApi.init()
-            const client = await kkApi.getClient<KeepKeyClientTypes>()
-            try {
-                await client.VerifyAuth()
-            } catch (err) {
-                let e = err as AxiosError
-                if (e.response && e.response.status == 401) {
-                    await client.Pair(null, { serviceName: this.config.serviceName, serviceImageUrl: this.config.serviceImageUrl })
-                }
-            }
-            return client
-        } catch (e) {
-            log.error(tag, e)
-            throw e
+export const getKeepKeySDK = async (config: KeepKeySDKConfig) => {
+    const baseConfig = {
+        apiKey: config.serviceKey,
+        isJsonMime(mime: string): boolean {
+            const jsonMime: RegExp = new RegExp('^(application\/json|[^;/ \t]+\/[^;/ \t]+[+]json)[ \t]*(;.*)?$', 'i');
+            return mime !== null && (jsonMime.test(mime) || mime.toLowerCase() === 'application/json-patch+json');
         }
     }
-}
 
-export default KeepKeyClient
+    const sdk = {
+        config,
+        client: new ClientEndpointsApi(baseConfig),
+        recovery: new RecoveryEndpointsApi(baseConfig),
+        developer: new DeveloperEndpointsApi(baseConfig),
+        deviceInfo: new DeviceInfoEndpointsApi(baseConfig),
+        sign: new KeepKeySignTxEndpointsApi(baseConfig),
+        wallet: new KeepKeyWalletEndpointsApi(baseConfig),
+        rawDevice: new RawKeepKeyDeviceI0EndpointsApi(baseConfig)
+    }
+
+    const verifyAuthResp = await sdk.client.verifyAuth()
+    if (verifyAuthResp.data.success) return sdk;
+
+    await sdk.client.pair({ authorization: config.serviceKey, pairBody: { ...config } })
+
+    return sdk;
+}

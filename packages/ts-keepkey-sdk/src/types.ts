@@ -1,5 +1,4 @@
-export type KeepKeyConfig = {
-    spec?: string,
+export interface KeepKeySDKConfig {
     serviceName: string,
     serviceImageUrl: string,
     serviceKey: string
