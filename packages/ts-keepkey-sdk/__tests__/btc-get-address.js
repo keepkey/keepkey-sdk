@@ -12,7 +12,7 @@ let run_test = async function () {
             spec
         }
         //init
-        let sdk = await getKeepKeySDK(config)
+        const sdk = await getKeepKeySDK(config)
 
 
         //Unsigned TX

@@ -1,5 +1,5 @@
 require("dotenv").config({ path: '../../../../.env' })
-const { KeepKeyClient } = require("../lib")
+const { getKeepKeySDK } = require("../lib")
 
 let spec = 'http://localhost:1646/spec/swagger.json'
 let ASSET = 'ETH'
@@ -11,9 +11,9 @@ let run_test = async function () {
             serviceImageUrl: process.env['SERVICE_IMAGE_URL'] || 'https://github.com/BitHighlander/keepkey-desktop/raw/master/electron/icon.png',
             spec
         }
-        let kk = await new KeepKeyClient(config).init()
+        const sdk = await getKeepKeySDK(config)
 
-        let user = await kk.User()
+        let user = await sdk.client.user()
         console.log(user.data)
     } catch (e) {
         console.error(e)
