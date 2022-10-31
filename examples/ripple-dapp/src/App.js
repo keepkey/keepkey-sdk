@@ -65,8 +65,8 @@ function App() {
       account = account.data
       console.log("account: ",account)
 
-      let toAddress = ""
-      let fromAddress = ""
+      let toAddress = "rU6ByS8KEgTdVEtV1P8RSMxUxP26THqkye"
+      let fromAddress = "rU6ByS8KEgTdVEtV1P8RSMxUxP26THqkye"
       let amount = "1000"
 
       let tx = {
