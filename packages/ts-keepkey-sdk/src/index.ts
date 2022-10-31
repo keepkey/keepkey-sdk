@@ -21,8 +21,11 @@ export const getKeepKeySDK = async (config: KeepKeySDKConfig) => {
         rawDevice: new RawKeepKeyDeviceI0EndpointsApi(baseConfig)
     }
 
-    const verifyAuthResp = await sdk.client.verifyAuth()
-    if (verifyAuthResp.data.success) return sdk;
+    const verifyAuthResp = await sdk.client.verifyAuth().catch(async (e) => {
+        await sdk.client.pair({ authorization: config.serviceKey, pairBody: { ...config } })
+    })
+
+    if (verifyAuthResp && verifyAuthResp.data.success) return sdk;
 
     await sdk.client.pair({ authorization: config.serviceKey, pairBody: { ...config } })
 
