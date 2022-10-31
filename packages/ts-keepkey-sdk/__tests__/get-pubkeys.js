@@ -1,5 +1,5 @@
 
-const { KeepKeyClient } = require("../lib")
+const { getKeepKeySDK } = require("../lib")
 
 let spec = 'http://localhost:1646/spec/swagger.json'
 
@@ -12,7 +12,7 @@ let run_test = async function () {
             spec
         }
         //init
-        let kk = await new KeepKeyClient(config).init()
+        const sdk = await getKeepKeySDK(config)
 
 
         //Unsigned TX
@@ -85,7 +85,7 @@ let run_test = async function () {
         //push tx to api
         // console.log(kk.instance.SignTransaction())
         let timeStart = new Date().getTime()
-        let responseSign = await kk.GetPublicKeys(null, { paths })
+        let responseSign = await sdk.wallet.getPublicKeys({ getPublicKey: paths })
         console.log("responseSign: ", responseSign.data)
         let timeEnd = new Date().getTime()
         console.log("duration: ",(timeStart - timeEnd) / 1000)

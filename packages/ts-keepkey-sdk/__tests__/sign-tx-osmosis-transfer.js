@@ -1,5 +1,5 @@
 
-const { KeepKeyClient } = require("../lib")
+const { getKeepKeySDK } = require("../lib")
 
 let spec = 'http://localhost:1646/spec/swagger.json'
 
@@ -12,7 +12,7 @@ let run_test = async function () {
             spec
         }
         //init
-        let kk = await new KeepKeyClient(config).init()
+        const sdk = await getKeepKeySDK(config)
 
         let tx = {
             "chain_id": "osmosis-1",
@@ -78,7 +78,7 @@ let run_test = async function () {
 
         //push tx to api
         // console.log(kk.instance.SignTransaction())
-        let responseSign = await kk.SignTransaction(null, { data: { invocation: { unsignedTx } } })
+        let responseSign = await sdk.sign.signTransaction({ body: { data: { invocation: { unsignedTx } } } })
         console.log("responseSign: ", responseSign.data)
 
     } catch (e) {
