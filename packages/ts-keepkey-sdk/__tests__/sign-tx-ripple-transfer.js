@@ -1,5 +1,4 @@
-
-const { KeepKeyClient } = require("../lib")
+const { getKeepKeySDK } = require("../lib")
 
 let spec = 'http://localhost:1646/spec/swagger.json'
 
@@ -12,53 +11,55 @@ let run_test = async function () {
             spec
         }
         //init
-        let kk = await new KeepKeyClient(config).init()
+        const sdk = await getKeepKeySDK(config)
 
-        let tx = {
-            "chain_id": "osmosis-1",
-            "account_number": "95421",
-            "sequence": "35",
-            "msg": [
-                {
-                    "type": "cosmos-sdk/MsgSend",
-                    "value": {
-                        "from_address": "osmo1qjwdyn56ecagk8rjf7crrzwcyz6775cj07qz9r",
-                        "to_address": "osmo15cenya0tr7nm3tz2wn3h3zwkht2rxrq7g9ypmq",
-                        "amount": [
-                            {
-                                "denom": "uosmo",
-                                "amount": "1000"
-                            }
-                        ]
-                    }
-                }
+      let toAddress = "rU6ByS8KEgTdVEtV1P8RSMxUxP26THqkye"
+      let fromAddress = "rU6ByS8KEgTdVEtV1P8RSMxUxP26THqkye"
+      let amount = "1000"
+
+      let tx = {
+        "type": "auth/StdTx",
+        "value": {
+          "fee": {
+            "amount": [
+              {
+                "amount": "1000",
+                "denom": "drop"
+              }
             ],
-            "fee": {
+            "gas": "28000"
+          },
+          "memo": "KeepKey",
+          "msg": [
+            {
+              "type": "ripple-sdk/MsgSend",
+              "value": {
                 "amount": [
-                    {
-                        "denom": "uosmo",
-                        "amount": "2800"
-                    }
+                  {
+                    "amount": amount,
+                    "denom": "drop"
+                  }
                 ],
-                "gas": "80000"
-            },
-            "signatures": [],
-            "memo": "hello world",
-            "timeout_height": "0"
+                "from_address": fromAddress,
+                "to_address": toAddress
+              }
+            }
+          ],
+          "signatures": null
         }
-
+      }
 
         //Unsigned TX
         let unsignedTx = {
-            "network": "OSMO",
-            "asset": "OSMO",
+            "network": "XRP",
+            "asset": "XRP",
             "transaction": {
                 "context": "0x33b35c665496bA8E71B22373843376740401F106.wallet",
                 "type": "transfer",
-                "addressFrom": "osmo1qjwdyn56ecagk8rjf7crrzwcyz6775cj07qz9r",
-                "recipient": "osmo15cenya0tr7nm3tz2wn3h3zwkht2rxrq7g9ypmq",
-                "asset": "OSMO",
-                "network": "OSMO",
+                "addressFrom": "rU6ByS8KEgTdVEtV1P8RSMxUxP26THqkye",
+                "recipient": "rU6ByS8KEgTdVEtV1P8RSMxUxP26THqkye",
+                "asset": "XRP",
+                "network": "XRP",
                 "memo": "",
                 "amount": "0.0001",
                 "fee": {
@@ -67,19 +68,32 @@ let run_test = async function () {
                 "noBroadcast": true
             },
             "HDwalletPayload": {
-                tx,
-                "addressNList": [2147483692, 2147483766, 2147483648, 0, 0],
-                chain_id: tx.chain_id,
-                account_number: tx.account_number,
-                sequence: tx.sequence,
+                "addressNList": [
+                    2147483692,
+                    2147483708,
+                    2147483648,
+                    0,
+                    0
+                ],
+                  tx:tx,
+                  flags: undefined,
+                  sequence: "3",
+                  lastLedgerSequence: "0",
+                  payment: {
+                    amount: amount,
+                    destination: toAddress,
+                    destinationTag: "1234567890",
+                  },
             },
-            "verbal": "osmosis transfer transaction"
+            "verbal": "Ripple transaction"
         }
 
         //push tx to api
         // console.log(kk.instance.SignTransaction())
-        let responseSign = await kk.SignTransaction(null, { data: { invocation: { unsignedTx } } })
+        let responseSign = await sdk.sign.signTransaction({ body: { data: { invocation: { unsignedTx } } } })
         console.log("responseSign: ", responseSign.data)
+        console.log("responseSign: ", responseSign.data.signedTx)
+        console.log("responseSign: ", JSON.stringify(responseSign.data.signedTx))
 
     } catch (e) {
         console.error(e)
