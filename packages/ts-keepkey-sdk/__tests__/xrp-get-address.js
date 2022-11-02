@@ -25,8 +25,9 @@ let run_test = async function () {
         //push tx to api
         // console.log(kk.instance.SignTransaction())
         let timeStart = new Date().getTime()
-        let responseSign = await sdk.pubkeys.rippleGetAddress(addressInfo)
-        console.log("responseSign: ", responseSign.pubkey)
+        let responseSign = await sdk.wallet.rippleGetAddress({ rippleGetAddress: addressInfo })
+        responseSign = responseSign.data
+        console.log("responseSign: ", responseSign)
         let timeEnd = new Date().getTime()
         console.log("duration: ", (timeStart - timeEnd) / 1000)
         // let responseSign = await kk.instance.GetPublicKeys(null, { paths })

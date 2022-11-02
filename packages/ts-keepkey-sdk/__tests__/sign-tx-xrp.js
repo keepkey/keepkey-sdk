@@ -13,41 +13,41 @@ let run_test = async function () {
         //init
         const sdk = await getKeepKeySDK(config)
 
-      let toAddress = "rU6ByS8KEgTdVEtV1P8RSMxUxP26THqkye"
-      let fromAddress = "rU6ByS8KEgTdVEtV1P8RSMxUxP26THqkye"
-      let amount = "1000"
+        let toAddress = "rU6ByS8KEgTdVEtV1P8RSMxUxP26THqkye"
+        let fromAddress = "rU6ByS8KEgTdVEtV1P8RSMxUxP26THqkye"
+        let amount = "1000"
 
-      let tx = {
-        "type": "auth/StdTx",
-        "value": {
-          "fee": {
-            "amount": [
-              {
-                "amount": "1000",
-                "denom": "drop"
-              }
-            ],
-            "gas": "28000"
-          },
-          "memo": "KeepKey",
-          "msg": [
-            {
-              "type": "ripple-sdk/MsgSend",
-              "value": {
-                "amount": [
-                  {
-                    "amount": amount,
-                    "denom": "drop"
-                  }
+        let tx = {
+            "type": "auth/StdTx",
+            "value": {
+                "fee": {
+                    "amount": [
+                        {
+                            "amount": "1000",
+                            "denom": "drop"
+                        }
+                    ],
+                    "gas": "28000"
+                },
+                "memo": "KeepKey",
+                "msg": [
+                    {
+                        "type": "ripple-sdk/MsgSend",
+                        "value": {
+                            "amount": [
+                                {
+                                    "amount": amount,
+                                    "denom": "drop"
+                                }
+                            ],
+                            "from_address": fromAddress,
+                            "to_address": toAddress
+                        }
+                    }
                 ],
-                "from_address": fromAddress,
-                "to_address": toAddress
-              }
+                "signatures": null
             }
-          ],
-          "signatures": null
         }
-      }
 
         //Unsigned TX
         let unsignedTx = {
@@ -75,15 +75,15 @@ let run_test = async function () {
                     0,
                     0
                 ],
-                  tx:tx,
-                  flags: undefined,
-                  sequence: "3",
-                  lastLedgerSequence: "0",
-                  payment: {
+                tx:tx,
+                flags: undefined,
+                sequence: "3",
+                lastLedgerSequence: "0",
+                payment: {
                     amount: amount,
                     destination: toAddress,
                     destinationTag: "1234567890",
-                  },
+                },
             },
             "verbal": "Ripple transaction"
         }

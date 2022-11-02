@@ -15,8 +15,9 @@ module.exports = function override(config) {
         "zlib": require.resolve("browserify-zlib"),
         "path": require.resolve("path"),
         "tls": require.resolve("tls"),
+        "xrpl": require.resolve("xrpl"),
+        //@jsdevtools
         fs: false
-
     })
     config.resolve.fallback = fallback;
     config.plugins = (config.plugins || []).concat([
