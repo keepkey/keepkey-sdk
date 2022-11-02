@@ -1,7 +1,18 @@
 import { ClientEndpointsApi, RecoveryEndpointsApi, DeveloperEndpointsApi, DeviceInfoEndpointsApi, KeepKeySignTxEndpointsApi, KeepKeyWalletEndpointsApi, RawKeepKeyDeviceI0EndpointsApi } from './generated'
 import { KeepKeySDKConfig } from './types'
 
-export const getKeepKeySDK = async (config: KeepKeySDKConfig) => {
+export interface KeepKeySDK {
+    config: KeepKeySDKConfig,
+    client: ClientEndpointsApi,
+    recovery: RecoveryEndpointsApi,
+    developer: DeveloperEndpointsApi,
+    deviceInfo: DeviceInfoEndpointsApi,
+    sign: KeepKeySignTxEndpointsApi,
+    wallet: KeepKeyWalletEndpointsApi,
+    rawDevice: RawKeepKeyDeviceI0EndpointsApi
+}
+
+export const getKeepKeySDK = async (config: KeepKeySDKConfig): Promise<KeepKeySDK> => {
     const baseConfig = {
         apiKey: config.serviceKey,
         isJsonMime(mime: string): boolean {
@@ -10,7 +21,7 @@ export const getKeepKeySDK = async (config: KeepKeySDKConfig) => {
         }
     }
 
-    const sdk = {
+    const sdk: KeepKeySDK = {
         config,
         client: new ClientEndpointsApi(baseConfig),
         recovery: new RecoveryEndpointsApi(baseConfig),
