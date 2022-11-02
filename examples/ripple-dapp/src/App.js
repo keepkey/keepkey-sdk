@@ -1,7 +1,12 @@
 import logo from './logo.png';
 import './App.css';
-import {useEffect,handleChange, handleSubmit} from 'react';
-import { useState } from "react";
+import {
+  useEffect,
+  useState,
+  handleChange,
+  handleSubmit
+} from 'react';
+
 import axios from 'axios'
 
 // const Axios = require('axios')
@@ -23,11 +28,13 @@ function App() {
   const [address, setAddress] = useState('')
   const [balance, setBalance] = useState('0.000')
   const [sequence, setSequence] = useState('0')
-  const [toAddress, setToAddress] = useState('toAddress')
-  const [amount, setAmount] = useState('')
+  const [toAddress, setToAddress] = useState('')
+  const [ledgerIndexCurrent, setLedgerIndexCurrent] = useState('')
+  const [amount, setAmount] = useState('1000')
   const [signedTx, setSignedTx] = useState('')
-
-
+  const [broadcastResponse, setBroadcastResponse] = useState('')
+  let client
+  let sdk
   let onStart = async function(){
     try{
       console.log("checkpoint1")
@@ -38,7 +45,7 @@ function App() {
         serviceImageUrl: process.env['SERVICE_IMAGE_URL'] || 'https://github.com/BitHighlander/keepkey-desktop/raw/master/electron/icon.png',
       }
       //init
-      let sdk = await getKeepKeySDK(config)
+      sdk = await getKeepKeySDK(config)
       console.log("checkpoint2")
 
       //Unsigned TX
@@ -63,7 +70,7 @@ function App() {
 
       const ledgerIndexCurrent = await client.getLedgerIndex()
       console.log("ledgerIndexCurrent: ",ledgerIndexCurrent)
-
+      setLedgerIndexCurrent(ledgerIndexCurrent)
       console.log("checkpoint3")
       const response = await client.request({
         "command": "account_info",
@@ -72,17 +79,14 @@ function App() {
       })
       console.log("checkpoint4")
       console.log(response.result.account_data)
-      if(response.result.account_data) {
-        let balance = response.result.account_data.Balance
-        let sequence = response.result.account_data.Sequence
+      let balance = response.result.account_data.Balance
+      let sequence = response.result.account_data.Sequence
 
 
-        console.log("sequence: ", sequence)
-        //set balance
-        setBalance(balance / 1000000)
-        setSequence(sequence)
-
-      }
+      console.log("sequence: ", sequence)
+      //set balance
+      setBalance(balance / 1000000)
+      setSequence(sequence)
 
     }catch(e){
       console.error(e)
@@ -96,12 +100,23 @@ function App() {
 
   let onSubmit = async function(){
     try{
+      console.log("amount: ",amount)
+      console.log("address: ",toAddress)
+
+      setAmount(amount * 1000000)
+      //TODO this is lame, dont do this
+      let config = {
+        serviceKey: process.env['SERVICE_KEY'] || 'abc-123',
+        serviceName: process.env['SERVICE_NAME'] || 'KeepKey SDK Demo App',
+        serviceImageUrl: process.env['SERVICE_IMAGE_URL'] || 'https://github.com/BitHighlander/keepkey-desktop/raw/master/electron/icon.png',
+      }
+      //init
+      sdk = await getKeepKeySDK(config)
+      console.log("checkpoint2")
       //
-      if (balance > 10) {
-        let toAddress = "rwAcBveSswLKXEr3qVsZr1URuZcg2z1Wum"
+      // if (balance > 10) {
         setToAddress(toAddress)
         let fromAddress = address
-        let amount = "1000"
 
         let tx = {
           "type": "auth/StdTx",
@@ -184,16 +199,13 @@ function App() {
         console.log("responseSign: ", responseSign.signedTx.value.signatures[0].serializedTx)
         //broadcast
         let serialized = responseSign.signedTx.value.signatures[0].serializedTx
+        //
         console.log("serialized: ", serialized)
         setSignedTx(serialized)
-        const buffer = Buffer.from(serialized, 'base64');
-        const bufString = buffer.toString('hex');
-        const submitResponse = await client.submitAndWait(bufString)
-        console.log(submitResponse)
 
-      } else {
-        alert("Balance too low to send!")
-      }
+      // } else {
+      //   alert("Balance too low to send!")
+      // }
       //
 
       //
@@ -204,16 +216,43 @@ function App() {
 
   let onBroadcast = async function(){
     try{
+      console.log("onBroadcast: ",signedTx)
       //
+      let client = new xrpl.Client("wss://xrplcluster.com/")
+      await client.connect()
+      console.log("checkpoint pre-broadcast")
 
-      //
-
+      const buffer = Buffer.from(signedTx, 'base64');
+      const bufString = buffer.toString('hex');
+      const submitResponse = await client.submitAndWait(bufString)
+      console.log("submitResponse",submitResponse)
+      setBroadcastResponse(JSON.stringify(submitResponse))
       //
     }catch(e){
       console.error(e)
     }
   }
 
+  let handleSubmit = function(event) {
+    event.preventDefault();
+    console.log("onSubmit called")
+  }
+
+  let handleChange = function(event) {
+    console.log("event.target.amount: ",event.target.value)
+    setAmount(event.target.value)
+  }
+
+  let handleSubmitAddress = function(event) {
+    event.preventDefault();
+    console.log("onSubmit called")
+    setAmount()
+  }
+
+  let handleChangeAddress = function(event) {
+    console.log("event.target.amount: ",event.target.value)
+    setToAddress(event.target.value)
+  }
 
   return (
     <div className="App">
@@ -228,27 +267,59 @@ function App() {
         Ripple Balance: {balance}
         <br/>
         Ripple sequence: {sequence}
-
-        <h1>Send:</h1>
-        <form>
+        <br/>
+        amount:
+        <form
+            onSubmit={handleSubmit} onChange={handleChange}
+        >
           <label>
-            amount:
+            {amount}
+            <br/>
             <input type="text" name="amount" />
           </label>
-          <input type="submit" value="Submit" />
+        </form>
+        <br/>
+        toAddress: (donate:  rwAcBveSswLKXEr3qVsZr1URuZcg2z1Wum)
+        <br/>
+        <form
+            onSubmit={handleSubmitAddress} onChange={handleChangeAddress}
+        >
+          <label>
+            {toAddress}
+            <br/>
+            <input type="text" name="address" />
+          </label>
         </form>
 
-        <h2>Build tx: </h2>
-        <br/>
-        to Address: {toAddress}
-        <br/>
         <h2>Sign tx: </h2>
         <br/>
+        <button
+            h='1.75rem'
+            size='sm'
+            variant='ghost'
+            colorScheme='blue'
+            onClick={onSubmit}
+        >
+          Sign
+        </button>
         signedTx: {signedTx}
 
         <h2>Broadcast tx: </h2>
         <br/>
+        <button
+            h='1.75rem'
+            size='sm'
+            variant='ghost'
+            colorScheme='blue'
+            onClick={onBroadcast}
+        >
+          broadcast
+        </button>
         signedTx: {signedTx}
+
+        <br/>
+        broadcast result:
+        <small>{broadcastResponse}</small>
       </header>
     </div>
   );
