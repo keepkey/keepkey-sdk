@@ -1,4 +1,4 @@
-import { ClientEndpointsApi, RecoveryEndpointsApi, DeveloperEndpointsApi, DeviceInfoEndpointsApi, KeepKeySignTxEndpointsApi, KeepKeyWalletEndpointsApi, RawKeepKeyDeviceI0EndpointsApi } from './generated'
+import { ClientEndpointsApi, RecoveryEndpointsApi, DeveloperEndpointsApi, DeviceInfoEndpointsApi, KeepKeySignTxEndpointsApi, KeepKeyWalletEndpointsApi, RawKeepKeyDeviceI0EndpointsApi, Configuration } from './generated'
 import { KeepKeySDKConfig } from './types'
 
 export interface KeepKeySDK {
@@ -13,13 +13,9 @@ export interface KeepKeySDK {
 }
 
 export const getKeepKeySDK = async (config: KeepKeySDKConfig): Promise<KeepKeySDK> => {
-    const baseConfig = {
-        apiKey: config.serviceKey,
-        isJsonMime(mime: string): boolean {
-            const jsonMime: RegExp = new RegExp('^(application\/json|[^;/ \t]+\/[^;/ \t]+[+]json)[ \t]*(;.*)?$', 'i');
-            return mime !== null && (jsonMime.test(mime) || mime.toLowerCase() === 'application/json-patch+json');
-        }
-    }
+    const baseConfig = new Configuration( {
+        apiKey: config.serviceKey
+    })
 
     const sdk: KeepKeySDK = {
         config,
@@ -36,7 +32,7 @@ export const getKeepKeySDK = async (config: KeepKeySDKConfig): Promise<KeepKeySD
         await sdk.client.pair({ authorization: config.serviceKey, pairBody: { ...config } })
     })
 
-    if (verifyAuthResp && verifyAuthResp.data.success) return sdk;
+    if (verifyAuthResp && verifyAuthResp.success) return sdk;
 
     await sdk.client.pair({ authorization: config.serviceKey, pairBody: { ...config } })
 

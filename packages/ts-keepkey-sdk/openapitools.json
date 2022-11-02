@@ -6,7 +6,7 @@
     "generators": {
       "sdk": {
         "inputSpec": "http://localhost:1646/spec/swagger.json",
-        "generatorName": "typescript-axios",
+        "generatorName": "typescript-fetch",
         "output": "#{cwd}/src/generated",
         "enablePostProcessFile": true,
         "additionalProperties": {
