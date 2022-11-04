@@ -89,7 +89,8 @@ function App() {
       setSequence(sequence)
 
     }catch(e){
-      console.error(e)
+      console.log(e)
+      //console.error(e)
     }
   }
 
@@ -297,7 +298,7 @@ function App() {
             h='1.75rem'
             size='sm'
             variant='ghost'
-            colorScheme='blue'
+            // colorScheme='blue'
             onClick={onSubmit}
         >
           Sign
@@ -310,7 +311,7 @@ function App() {
             h='1.75rem'
             size='sm'
             variant='ghost'
-            colorScheme='blue'
+            // colorScheme='blue'
             onClick={onBroadcast}
         >
           broadcast
