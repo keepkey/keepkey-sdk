@@ -32,6 +32,7 @@ export const getKeepKeySDK = async (config: KeepKeySDKConfig): Promise<KeepKeySD
         await sdk.client.pair({ authorization: config.serviceKey, pairBody: { ...config } })
     })
 
+    // @ts-ignore
     if (verifyAuthResp && verifyAuthResp.success) return sdk;
 
     await sdk.client.pair({ authorization: config.serviceKey, pairBody: { ...config } })
