@@ -7,7 +7,6 @@ import {
   handleSubmit
 } from 'react';
 import Modal from 'react-modal';
-import Text from 'react-text';
 import styled from 'styled-components';
 
 import { getKeepKeySDK } from '@keepkey/keepkey-sdk'
@@ -43,6 +42,10 @@ function App() {
   cursor: pointer;
 `;
 
+  const Text = styled.text`
+    flexWrap: 'wrap'
+  `;
+
   const customStyles = {
     content: {
       'background-color': 'gray',
@@ -58,10 +61,12 @@ function App() {
   };
 
   function openModalSend() {
+    onStart()
     setShowModalSend(true);
   }
 
   function openModalReceive() {
+    onStart()
     setShowModalReceive(true);
   }
 
@@ -307,7 +312,10 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img onClick={onStart} src={logo} className="App-logo" alt="logo" />
+        <div
+        onClick={onStart}>
+          <img src={logo} className="App-logo" alt="logo" />
+        </div>
 
         <Modal
             isOpen={showModalSend}
@@ -323,7 +331,7 @@ function App() {
             <div>
               <small>Completed Signing!</small>
               <div>
-                <Text style={{flexWrap: 'wrap'}}>{signedTx}</Text>
+                <Text>{signedTx}</Text>
               </div>
             </div>
               :
