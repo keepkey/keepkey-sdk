@@ -8,6 +8,8 @@ import {
 } from 'react';
 import Modal from 'react-modal';
 import Text from 'react-text';
+import styled from 'styled-components';
+
 import { getKeepKeySDK } from '@keepkey/keepkey-sdk'
 const xrpl = require("xrpl")
 
@@ -30,6 +32,30 @@ function App() {
 
   let client
   let sdk
+
+  const Button = styled.button`
+  background-color: black;
+  color: white;
+  font-size: 20px;
+  padding: 10px 60px;
+  border-radius: 5px;
+  margin: 10px 0px;
+  cursor: pointer;
+`;
+
+  const customStyles = {
+    content: {
+      'background-color': 'gray',
+      text: 'white',
+      top: '35%',
+      left: '50%',
+      right: 'auto',
+      bottom: 'auto',
+      marginRight: '-50%',
+      width: '60%',
+      transform: 'translate(-40%, -10%)',
+    },
+  };
 
   function openModalSend() {
     setShowModalSend(true);
@@ -288,6 +314,7 @@ function App() {
             onAfterOpen={afterOpenModal}
             onRequestClose={closeModalSend}
             contentLabel="Send Modal"
+            style={customStyles}
         >
           <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Send XRP</h2>
 
@@ -322,7 +349,7 @@ function App() {
                 </label>
               </form>
 
-              <button
+              <Button
                   h='1.75rem'
                   size='sm'
                   variant='ghost'
@@ -330,7 +357,7 @@ function App() {
                   onClick={onSubmit}
               >
                 Sign
-              </button>
+              </Button>
             </div>
           }
 
@@ -339,7 +366,7 @@ function App() {
 
                 <h2>Broadcast tx: </h2>
                 <br/>
-                <button
+                <Button
                     h='1.75rem'
                     size='sm'
                     variant='ghost'
@@ -347,7 +374,7 @@ function App() {
                     onClick={onBroadcast}
                 >
                   broadcast
-                </button>
+                </Button>
               </div>
               :
               <div>
@@ -373,7 +400,7 @@ function App() {
 
 
           <br/>
-          <button onClick={closeModalSend}>close</button>
+          <Button onClick={closeModalSend}>close</Button>
 
         </Modal>
 
@@ -382,12 +409,13 @@ function App() {
             onAfterOpen={afterOpenModal}
             onRequestClose={closeModalReceive}
             contentLabel="Send Modal"
+            style={customStyles}
         >
           <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Send XRP</h2>
           <div>
             Ripple Address: {address}
             <br/>
-            <button onClick={closeModalReceive}>close</button>
+            <Button onClick={closeModalReceive}>close</Button>
           </div>
         </Modal>
 
@@ -395,8 +423,8 @@ function App() {
         <br/>
         Ripple Balance: {balance}
         <br/>
-        <button onClick={openModalSend}>Send XRP</button>
-        <button onClick={openModalReceive}>Receive XRP</button>
+        <Button onClick={openModalSend}>Send XRP</Button>
+        <Button onClick={openModalReceive}>Receive XRP</Button>
         {/*Ripple sequence: {sequence}*/}
         {/*<br/>*/}
       </header>
