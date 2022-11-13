@@ -17,7 +17,7 @@ let run_test = async function () {
 
         //Unsigned TX
         let seed = process.env['WALLET_TEST']
-        console.log(seed)
+        //console.log(seed)
         if (!seed) throw Error("Must set seed in ENV file!")
         let loadPayload = {
             mnemonic: seed,
@@ -30,11 +30,12 @@ let run_test = async function () {
         // console.log(kk.instance.SignTransaction())
         let timeStart = new Date().getTime()
 
-        let wipe = await kk.Wipe()
-        console.log("wipe: ", wipe.data)
+        //console.log(sdk)
+        // let wipe = await sdk.developer.wipe("",{})
+        // console.log("wipe: ", wipe)
 
         let responseSign = await sdk.developer.loadDevice({ loadDevice: loadPayload })
-        console.log("responseSign: ", responseSign.data)
+        console.log("responseSign: ", responseSign)
         let timeEnd = new Date().getTime()
         console.log("duration: ", (timeStart - timeEnd) / 1000)
 
