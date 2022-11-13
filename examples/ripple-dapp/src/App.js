@@ -22,7 +22,8 @@ function App() {
   const [amount, setAmount] = useState('1.0000000000')
   const [signedTx, setSignedTx] = useState('')
   const [broadcastResponse, setBroadcastResponse] = useState('')
-  const [showModal, setShowModal] = useState(false)
+  const [showModalSend, setShowModalSend] = useState(false)
+  const [showModalReceive, setShowModalReceive] = useState(false)
   const [userInputDone, setUserInputDone] = useState(false)
   const [broadcasted, setBroadcasted] = useState(false)
   const [signed, setSigned] = useState(false)
@@ -30,20 +31,29 @@ function App() {
   let client
   let sdk
 
-  function openModal() {
-    setShowModal(true);
+  function openModalSend() {
+    setShowModalSend(true);
   }
+
+  function openModalReceive() {
+    setShowModalReceive(true);
+  }
+
 
   function afterOpenModal() {
     // references are now sync'd and can be accessed.
     subtitle.style.color = '#f00';
   }
 
-  function closeModal() {
+  function closeModalSend() {
     setSigned(false)
     setBroadcasted(false)
     setUserInputDone(false)
-    setShowModal(false);
+    setShowModalSend(false);
+  }
+
+  function closeModalReceive() {
+    setShowModalReceive(false);
   }
 
   let onStart = async function(){
@@ -274,9 +284,9 @@ function App() {
         <img src={logo} className="App-logo" alt="logo" />
 
         <Modal
-            isOpen={showModal}
+            isOpen={showModalSend}
             onAfterOpen={afterOpenModal}
-            onRequestClose={closeModal}
+            onRequestClose={closeModalSend}
             contentLabel="Send Modal"
         >
           <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Send XRP</h2>
@@ -363,17 +373,30 @@ function App() {
 
 
           <br/>
-          <button onClick={closeModal}>close</button>
+          <button onClick={closeModalSend}>close</button>
 
         </Modal>
 
-        {/*<br/>*/}
-        {/*Ripple Address: {address}*/}
+        <Modal
+            isOpen={showModalReceive}
+            onAfterOpen={afterOpenModal}
+            onRequestClose={closeModalReceive}
+            contentLabel="Send Modal"
+        >
+          <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Send XRP</h2>
+          <div>
+            Ripple Address: {address}
+            <br/>
+            <button onClick={closeModalReceive}>close</button>
+          </div>
+        </Modal>
+
+
         <br/>
         Ripple Balance: {balance}
         <br/>
-        <button onClick={openModal}>Send XRP</button>
-
+        <button onClick={openModalSend}>Send XRP</button>
+        <button onClick={openModalReceive}>Receive XRP</button>
         {/*Ripple sequence: {sequence}*/}
         {/*<br/>*/}
       </header>
