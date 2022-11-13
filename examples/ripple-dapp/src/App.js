@@ -7,20 +7,9 @@ import {
   handleSubmit
 } from 'react';
 import Modal from 'react-modal';
-
+import Text from 'react-text';
 import { getKeepKeySDK } from '@keepkey/keepkey-sdk'
 const xrpl = require("xrpl")
-
-const customStyles = {
-  content: {
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    marginRight: '-50%',
-    transform: 'translate(-50%, -50%)',
-  },
-};
 
 function App() {
   let subtitle;
@@ -30,12 +19,11 @@ function App() {
   const [sequence, setSequence] = useState('0')
   const [toAddress, setToAddress] = useState('')
   const [ledgerIndexCurrent, setLedgerIndexCurrent] = useState('')
-  const [amount, setAmount] = useState('1000')
+  const [amount, setAmount] = useState('1.0000000000')
   const [signedTx, setSignedTx] = useState('')
   const [broadcastResponse, setBroadcastResponse] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [userInputDone, setUserInputDone] = useState(false)
-  const [showBroadcastButton, setshowBroadcastButton] = useState(false)
   const [broadcasted, setBroadcasted] = useState(false)
   const [signed, setSigned] = useState(false)
 
@@ -52,6 +40,9 @@ function App() {
   }
 
   function closeModal() {
+    setSigned(false)
+    setBroadcasted(false)
+    setUserInputDone(false)
     setShowModal(false);
   }
 
@@ -121,10 +112,10 @@ function App() {
 
   let onSubmit = async function(){
     try{
-      console.log("amount: ",amount)
+      console.log("amount: ",parseFloat(amount) * 1000000)
       console.log("address: ",toAddress)
 
-      setAmount(amount * 1000000)
+      setAmount( parseFloat(amount) * 1000000)
       //TODO this is lame, dont do this
       let config = {
         serviceKey: process.env['SERVICE_KEY'] || 'abc-123',
@@ -158,7 +149,7 @@ function App() {
               "value": {
                 "amount": [
                   {
-                    "amount": amount,
+                    "amount": parseFloat(amount) * 1000000,
                     "denom": "drop"
                   }
                 ],
@@ -183,7 +174,7 @@ function App() {
           "asset": "XRP",
           "network": "XRP",
           "memo": "",
-          "amount": amount,
+          "amount": parseFloat(amount) * 1000000,
           "fee": {
             "priority": 5
           },
@@ -203,7 +194,7 @@ function App() {
           sequence,
           lastLedgerSequence: ledgerIndexCurrent + 1000000000,
           payment: {
-            amount,
+            amount:parseFloat(amount) * 1000000,
             destination: toAddress,
             destinationTag: "1234567890",
           },
@@ -286,8 +277,7 @@ function App() {
             isOpen={showModal}
             onAfterOpen={afterOpenModal}
             onRequestClose={closeModal}
-            style={customStyles}
-            contentLabel="Example Modal"
+            contentLabel="Send Modal"
         >
           <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Send XRP</h2>
 
@@ -295,6 +285,9 @@ function App() {
           {userInputDone ?
             <div>
               <small>Completed Signing!</small>
+              <div>
+                <Text style={{flexWrap: 'wrap'}}>{signedTx}</Text>
+              </div>
             </div>
               :
             <div>
@@ -328,7 +321,6 @@ function App() {
               >
                 Sign
               </button>
-
             </div>
           }
 
