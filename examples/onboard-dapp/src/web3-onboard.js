@@ -40,12 +40,12 @@ export default init({
             // used for network requests
             rpcUrl: `https://mainnet.infura.io/v3/${INFURA_KEY}`
         },
-        // {
-        //   id: '0x3',
-        //   token: 'tROP',
-        //   label: 'Ethereum Ropsten Testnet',
-        //   rpcUrl: `https://ropsten.infura.io/v3/${INFURA_KEY}`
-        // },
+        {
+          id: '0x3',
+          token: 'tROP',
+          label: 'Ethereum Ropsten Testnet',
+          rpcUrl: `https://ropsten.infura.io/v3/${INFURA_KEY}`
+        },
         // {
         //   id: '0x4',
         //   token: 'rETH',
@@ -82,10 +82,10 @@ export default init({
             }
         ],
         // Optional - but allows for dapps to require users to agree to TOS and privacy policy before connecting a wallet
-        // agreement: {
-        //   version: '1.0.0',
-        //   termsUrl: 'https://www.blocknative.com/terms-conditions',
-        //   privacyUrl: 'https://www.blocknative.com/privacy-policy'
-        // }
+        agreement: {
+          version: '1.0.0',
+          termsUrl: 'https://www.blocknative.com/terms-conditions',
+          privacyUrl: 'https://www.blocknative.com/privacy-policy'
+        }
     }
 })

@@ -5,7 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Web3OnboardProvider } from '@web3-onboard/react'
 import web3Onboard from './web3-onboard'
-
+window.Buffer = require('buffer/').Buffer;
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
