@@ -21,7 +21,7 @@ let run_test = async function () {
         if (!seed) throw Error("Must set seed in ENV file!")
         let loadPayload = {
             mnemonic: seed,
-            label: "testSeed",
+            label: "Test Seed",
             passphrase: false,
             pin: "1",
             skipChecksum: true
