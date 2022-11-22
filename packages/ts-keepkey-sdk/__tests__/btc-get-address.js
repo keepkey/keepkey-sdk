@@ -23,13 +23,18 @@ let run_test = async function () {
             showDisplay: false
         }
 
-        //push tx to api
-        // console.log(kk.instance.SignTransaction())
-        let timeStart = new Date().getTime()
-        let responseSign = await sdk.wallet.btcGetAddress({ bTCGetAddress: addressInfo })
-        console.log("responseSign: ", responseSign.data)
-        let timeEnd = new Date().getTime()
-        console.log("duration: ", (timeStart - timeEnd) / 1000)
+        for (let index = 0; index < 100; index++) {
+            //push tx to api
+            // console.log(kk.instance.SignTransaction())
+            console.log("Try: ", index)
+            let timeStart = new Date().getTime()
+            let responseSign = await sdk.wallet.btcGetAddress({ bTCGetAddress: addressInfo })
+            console.log("responseSign: ", responseSign.data)
+            let timeEnd = new Date().getTime()
+            console.log("duration: ", (timeStart - timeEnd) / 1000)
+        }
+
+
 
         // let responseSign = await kk.instance.GetPublicKeys(null, { paths })
         // console.log("responseSign: ", responseSign.data)
