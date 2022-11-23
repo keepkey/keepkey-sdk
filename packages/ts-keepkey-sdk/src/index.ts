@@ -1,4 +1,4 @@
-import { ClientEndpointsApi, RecoveryEndpointsApi, DeveloperEndpointsApi, DeviceInfoEndpointsApi, KeepKeySignTxEndpointsApi, KeepKeyWalletEndpointsApi, RawKeepKeyDeviceI0EndpointsApi, Configuration } from './generated'
+import { ClientEndpointsApi, RecoveryEndpointsApi, DeveloperEndpointsApi, DeviceInfoEndpointsApi, KeepKeySignTxEndpointsApi, KeepKeyWalletEndpointsApi, Configuration } from './generated'
 import { KeepKeySDKConfig } from './types'
 
 export interface KeepKeySDK {
@@ -8,8 +8,7 @@ export interface KeepKeySDK {
     developer: DeveloperEndpointsApi,
     deviceInfo: DeviceInfoEndpointsApi,
     sign: KeepKeySignTxEndpointsApi,
-    wallet: KeepKeyWalletEndpointsApi,
-    rawDevice: RawKeepKeyDeviceI0EndpointsApi
+    wallet: KeepKeyWalletEndpointsApi
 }
 
 export const getKeepKeySDK = async (config: KeepKeySDKConfig): Promise<KeepKeySDK> => {
@@ -24,8 +23,7 @@ export const getKeepKeySDK = async (config: KeepKeySDKConfig): Promise<KeepKeySD
         developer: new DeveloperEndpointsApi(baseConfig),
         deviceInfo: new DeviceInfoEndpointsApi(baseConfig),
         sign: new KeepKeySignTxEndpointsApi(baseConfig),
-        wallet: new KeepKeyWalletEndpointsApi(baseConfig),
-        rawDevice: new RawKeepKeyDeviceI0EndpointsApi(baseConfig)
+        wallet: new KeepKeyWalletEndpointsApi(baseConfig)
     }
 
     const verifyAuthResp = await sdk.client.verifyAuth().catch(async (e) => {
