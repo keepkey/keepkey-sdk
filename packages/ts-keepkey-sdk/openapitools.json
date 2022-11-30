@@ -5,8 +5,8 @@
     "version": "6.2.0",
     "generators": {
       "sdk": {
-        "inputSpec": "./swagger.json",
-        "generatorName": "typescript-axios",
+        "inputSpec": "/Users/seanluther/keepkey_work/keepkey-desktop/electron/api/dist/swagger.json",
+        "generatorName": "typescript-fetch",
         "output": "#{cwd}/src/generated",
         "enablePostProcessFile": true,
         "additionalProperties": {
