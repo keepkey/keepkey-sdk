@@ -16,42 +16,42 @@ import { exists, mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface WriteBody
+ * @interface Press
  */
-export interface WriteBody {
+export interface Press {
     /**
      * 
-     * @type {any}
-     * @memberof WriteBody
+     * @type {boolean}
+     * @memberof Press
      */
-    data: any | null;
+    isYes: boolean;
 }
 
 /**
- * Check if a given object implements the WriteBody interface.
+ * Check if a given object implements the Press interface.
  */
-export function instanceOfWriteBody(value: object): boolean {
+export function instanceOfPress(value: object): boolean {
     let isInstance = true;
-    isInstance = isInstance && "data" in value;
+    isInstance = isInstance && "isYes" in value;
 
     return isInstance;
 }
 
-export function WriteBodyFromJSON(json: any): WriteBody {
-    return WriteBodyFromJSONTyped(json, false);
+export function PressFromJSON(json: any): Press {
+    return PressFromJSONTyped(json, false);
 }
 
-export function WriteBodyFromJSONTyped(json: any, ignoreDiscriminator: boolean): WriteBody {
+export function PressFromJSONTyped(json: any, ignoreDiscriminator: boolean): Press {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
-        'data': json['data'],
+        'isYes': json['isYes'],
     };
 }
 
-export function WriteBodyToJSON(value?: WriteBody | null): any {
+export function PressToJSON(value?: Press | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -60,7 +60,7 @@ export function WriteBodyToJSON(value?: WriteBody | null): any {
     }
     return {
         
-        'data': value.data,
+        'isYes': value.isYes,
     };
 }
 

@@ -1,3 +1,4 @@
+.openapi-generator-ignore
 apis/ClientEndpointsApi.ts
 apis/DeveloperEndpointsApi.ts
 apis/DeviceInfoEndpointsApi.ts

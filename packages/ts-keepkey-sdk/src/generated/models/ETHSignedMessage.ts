@@ -13,60 +13,53 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import type { CryptoPubKey } from './CryptoPubKey';
-import {
-    CryptoPubKeyFromJSON,
-    CryptoPubKeyFromJSONTyped,
-    CryptoPubKeyToJSON,
-} from './CryptoPubKey';
-
 /**
  * 
  * @export
- * @interface StdSignature
+ * @interface ETHSignedMessage
  */
-export interface StdSignature {
-    /**
-     * 
-     * @type {CryptoPubKey}
-     * @memberof StdSignature
-     */
-    pubKey: CryptoPubKey;
+export interface ETHSignedMessage {
     /**
      * 
      * @type {string}
-     * @memberof StdSignature
+     * @memberof ETHSignedMessage
+     */
+    address: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ETHSignedMessage
      */
     signature: string;
 }
 
 /**
- * Check if a given object implements the StdSignature interface.
+ * Check if a given object implements the ETHSignedMessage interface.
  */
-export function instanceOfStdSignature(value: object): boolean {
+export function instanceOfETHSignedMessage(value: object): boolean {
     let isInstance = true;
-    isInstance = isInstance && "pubKey" in value;
+    isInstance = isInstance && "address" in value;
     isInstance = isInstance && "signature" in value;
 
     return isInstance;
 }
 
-export function StdSignatureFromJSON(json: any): StdSignature {
-    return StdSignatureFromJSONTyped(json, false);
+export function ETHSignedMessageFromJSON(json: any): ETHSignedMessage {
+    return ETHSignedMessageFromJSONTyped(json, false);
 }
 
-export function StdSignatureFromJSONTyped(json: any, ignoreDiscriminator: boolean): StdSignature {
+export function ETHSignedMessageFromJSONTyped(json: any, ignoreDiscriminator: boolean): ETHSignedMessage {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
-        'pubKey': CryptoPubKeyFromJSON(json['pub_key']),
+        'address': json['address'],
         'signature': json['signature'],
     };
 }
 
-export function StdSignatureToJSON(value?: StdSignature | null): any {
+export function ETHSignedMessageToJSON(value?: ETHSignedMessage | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -75,7 +68,7 @@ export function StdSignatureToJSON(value?: StdSignature | null): any {
     }
     return {
         
-        'pub_key': CryptoPubKeyToJSON(value.pubKey),
+        'address': value.address,
         'signature': value.signature,
     };
 }

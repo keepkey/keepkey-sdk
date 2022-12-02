@@ -16,50 +16,42 @@ import { exists, mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface ThorchainMsg
+ * @interface SendPassphrase
  */
-export interface ThorchainMsg {
+export interface SendPassphrase {
     /**
      * 
      * @type {string}
-     * @memberof ThorchainMsg
+     * @memberof SendPassphrase
      */
-    type: string;
-    /**
-     * 
-     * @type {any}
-     * @memberof ThorchainMsg
-     */
-    value: any | null;
+    passphrase: string;
 }
 
 /**
- * Check if a given object implements the ThorchainMsg interface.
+ * Check if a given object implements the SendPassphrase interface.
  */
-export function instanceOfThorchainMsg(value: object): boolean {
+export function instanceOfSendPassphrase(value: object): boolean {
     let isInstance = true;
-    isInstance = isInstance && "type" in value;
-    isInstance = isInstance && "value" in value;
+    isInstance = isInstance && "passphrase" in value;
 
     return isInstance;
 }
 
-export function ThorchainMsgFromJSON(json: any): ThorchainMsg {
-    return ThorchainMsgFromJSONTyped(json, false);
+export function SendPassphraseFromJSON(json: any): SendPassphrase {
+    return SendPassphraseFromJSONTyped(json, false);
 }
 
-export function ThorchainMsgFromJSONTyped(json: any, ignoreDiscriminator: boolean): ThorchainMsg {
+export function SendPassphraseFromJSONTyped(json: any, ignoreDiscriminator: boolean): SendPassphrase {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
-        'type': json['type'],
-        'value': json['value'],
+        'passphrase': json['passphrase'],
     };
 }
 
-export function ThorchainMsgToJSON(value?: ThorchainMsg | null): any {
+export function SendPassphraseToJSON(value?: SendPassphrase | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -68,8 +60,7 @@ export function ThorchainMsgToJSON(value?: ThorchainMsg | null): any {
     }
     return {
         
-        'type': value.type,
-        'value': value.value,
+        'passphrase': value.passphrase,
     };
 }
 
